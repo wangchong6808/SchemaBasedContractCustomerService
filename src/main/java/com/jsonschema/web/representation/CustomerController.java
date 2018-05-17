@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CustomerController {
 
-    @PostMapping("/customer")
+    @PostMapping("/customers")
     @JsonSchema(inputSchema = "1001", outputSchema = "1002")
     public Customer createCustomer(@RequestParam("firstName") String firstName, @RequestBody Customer customer) {
         customer.setMobile(String.valueOf(Math.random()));
@@ -15,9 +15,9 @@ public class CustomerController {
         return customer;
     }
 
-    @GetMapping("/customer/{id}")
+    @GetMapping("/customers/{id}")
     @JsonSchema(outputSchema = "1002")
     public Customer getCustomer(@PathVariable("id") int id) {
-        return Customer.builder().id(id).mobile("123").lastName("Tom").build();
+        return Customer.builder().id(id).mobile("123").firstName("Tom").lastName("Smith").build();
     }
 }

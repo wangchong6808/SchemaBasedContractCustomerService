@@ -1,6 +1,6 @@
 package com.jsonschema.web.representation;
 
-import com.jsonschema.HelloWorldApplication;
+import com.jsonschema.CustomerApplication;
 import com.jsonschema.web.domain.OrderService;
 import com.jsonschema.web.dto.Customer;
 import com.jsonschema.web.dto.Order;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @EnableAspectJAutoProxy
-@ComponentScan(basePackageClasses={HelloWorldApplication.class})
+@ComponentScan(basePackageClasses={CustomerApplication.class})
 public class OrderControllerTest {
 
     @Autowired

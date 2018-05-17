@@ -1,6 +1,6 @@
 package com.jsonschema.web.representation;
 
-import com.jsonschema.HelloWorldApplication;
+import com.jsonschema.CustomerApplication;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @EnableAspectJAutoProxy
-@ComponentScan(basePackageClasses={HelloWorldApplication.class})
+@ComponentScan(basePackageClasses={CustomerApplication.class})
 public class CustomerControllerTest {
 
     @Autowired

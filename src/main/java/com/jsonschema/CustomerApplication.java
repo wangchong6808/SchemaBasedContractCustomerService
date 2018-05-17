@@ -26,9 +26,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @EnableFeignClients(basePackages = {"com.jsonschema"})
-public class HelloWorldApplication {
+public class CustomerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HelloWorldApplication.class, args);
+		SpringApplication.run(CustomerApplication.class, args);
 	}
 }
