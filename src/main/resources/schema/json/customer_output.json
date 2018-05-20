@@ -5,7 +5,8 @@
   "type": "object",
   "properties": {
     "id" : {
-      "type" : "integer"
+      "type" : "integer",
+      "minimum" : 1
     },
     "firstName": {
       "type": "string"
@@ -19,7 +20,8 @@
   },
   "required": [
     "id",
-    "lastName"
+    "lastName",
+    "firstName"
   ],
   "additionalItems": false
 }
