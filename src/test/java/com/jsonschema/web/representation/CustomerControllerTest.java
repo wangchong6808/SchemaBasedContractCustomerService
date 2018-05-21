@@ -36,15 +36,15 @@ public class CustomerControllerTest {
     CustomerService customerService;
 
     @Test
-    void should_return_400() throws Exception {
-        Mockito.when(customerService.getCustomer(10)).thenReturn(Customer.builder().id(10).build());
+    void should_return_400_given_customer_without_last_name() throws Exception {
+        Mockito.when(customerService.getCustomer(10)).thenReturn(Customer.builder().id(10).firstName("first").build());
         this.mockMvc.perform(get("/customers/10"))
                 .andExpect(status().is(400));
     }
 
     @Test
-    void should_return_200_with_customer() throws Exception {
-        Mockito.when(customerService.getCustomer(Mockito.anyInt())).thenCallRealMethod();
+    void should_return_200_given_customer_with_all_required_fields_provided() throws Exception {
+        Mockito.when(customerService.getCustomer(100)).thenReturn(Customer.builder().id(100).firstName("first").lastName("lastName").build());
         this.mockMvc.perform(get("/customers/100"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("100"))
