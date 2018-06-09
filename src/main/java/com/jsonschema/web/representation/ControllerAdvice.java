@@ -1,6 +1,5 @@
 package com.jsonschema.web.representation;
 
-import com.jsonschema.exception.FailedToLoadSchemaException;
 import com.jsonschema.exception.SchemaViolatedException;
 import com.jsonschema.validation.ValidationContext;
 import com.jsonschema.web.error.ErrorResult;

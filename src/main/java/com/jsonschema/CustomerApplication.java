@@ -20,9 +20,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-/**
- * @author Joe Grandja
- */
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @EnableFeignClients(basePackages = {"com.jsonschema"})

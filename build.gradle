@@ -52,9 +52,11 @@ dependencies {
 	testCompile("org.springframework.cloud:spring-cloud-contract-spec")
 }
 
-task sourceJar (type : Jar) {
+task sourceJar (type : Jar)  {
 	classifier = 'schema'
-	from sourceSets.main.resources.include("/schema/json/**/*.*")
+	//from sourceSets.main.resources.include("/schema/json/**/*.*")  suppose to include only schema files but it is effective during build
+	// which makes other files are excluded
+	from sourceSets.main.resources.include("**/*.*")
 }
 
 publishing {
@@ -68,9 +70,9 @@ publishing {
 		}
 	}
 	repositories {
-		/*maven {
+		maven {
 			url "file:/${project.projectDir}/artifacts"
-		}*/
+		}
 		mavenLocal()
 	}
 }
