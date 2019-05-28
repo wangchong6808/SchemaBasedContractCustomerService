@@ -17,8 +17,8 @@ apply plugin: 'maven-publish'
 
 repositories {
 	mavenLocal()
+	maven { url 'http://172.30.3.181:8081/repository/maven-public/' }
 	mavenCentral()
-	maven { url 'https://ci.otr.mercedes-benz.com.cn:8443/repository/mvngroup/' }
 }
 dependencyManagement {
 	imports {
@@ -64,6 +64,13 @@ publishing {
 		stubs(MavenPublication) {
 			groupId 'project'
 			version '1.0'
+			artifactId "customer"
+			artifact (sourceJar) {
+			}
+		}
+		stubs1(MavenPublication) {
+			groupId 'project'
+			version '2.0'
 			artifactId "customer"
 			artifact (sourceJar) {
 			}
