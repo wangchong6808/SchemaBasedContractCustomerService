@@ -11,10 +11,17 @@ pipelines:
       mygit:  # this is the name of material
         # says about type of material and url at once
         git: https://github.com/wangchong6808/SchemaBasedContractCustomerService.git
+        branch: master
+        destination: app
+        shallow_clone: true
     stages:
       - build: # name of stage
           jobs:
             build: # name of the job
               tasks:
                 - exec: # indicates type of task
-                    command: sh build.sh
+                    command: bash
+                    arguments:
+                      - "build.sh"
+                    working_directory: app
+                    run_if: passed
