@@ -18,6 +18,8 @@ pipelines:
       - build: # name of stage
           jobs:
             build: # name of the job
+              resources:
+                - docker
               tasks:
                 - exec: # indicates type of task
                     command: bash
