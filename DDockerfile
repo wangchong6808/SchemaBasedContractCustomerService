@@ -1,0 +1,84 @@
+FROM debian:jessie
+MAINTAINER GoCD <go-cd-dev@googlegroups.com>
+
+LABEL gocd.version="18.11.0" \
+  description="GoCD agent based on debian version 8" \
+  maintainer="GoCD <go-cd-dev@googlegroups.com>" \
+  gocd.full.version="18.11.0-8024" \
+  gocd.git.sha="68ad518659756345f346b74f7aa1cfa9ffd8a501"
+
+ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini-static-amd64 /usr/local/sbin/tini
+ADD https://github.com/tianon/gosu/releases/download/1.11/gosu-amd64 /usr/local/sbin/gosu
+
+
+# force encoding
+ENV LANG=en_US.utf8
+ENV GRADLE_HOME /opt/gradle
+ENV GRADLE_VERSION 4.9
+ENV GRADLE_USER_HOME /home/go/.gradle
+
+ARG GRADLE_DOWNLOAD_SHA256=e66e69dce8173dd2004b39ba93586a184628bc6c28461bc771d6835f7f9b0d28
+ARG UID=1000
+ARG GID=1000
+
+# Install Go Agent
+RUN \
+# add mode and permissions for files we added above
+  chmod 0755 /usr/local/sbin/tini && \
+  chown root:root /usr/local/sbin/tini && \
+  chmod 0755 /usr/local/sbin/gosu && \
+  chown root:root /usr/local/sbin/gosu && \
+# add our user and group first to make sure their IDs get assigned consistently,
+# regardless of whatever dependencies get added
+  groupadd -g ${GID} go && \ 
+  useradd -u ${UID} -g go -d /home/go -m go && \
+  echo 'deb http://deb.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list && \
+  apt-get update && \
+  apt-get install -y openjdk-8-jdk ca-certificates-java="20161107~bpo8+1" git subversion mercurial openssh-client bash unzip curl wget gnupg locales && \
+  apt-get autoclean && \
+  echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen && /usr/sbin/locale-gen && \
+  /var/lib/dpkg/info/ca-certificates-java.postinst configure && \
+# download the zip file
+  curl --fail --location --silent --show-error "https://download.gocd.org/binaries/18.11.0-8024/generic/go-agent-18.11.0-8024.zip" > /tmp/go-agent.zip && \
+# unzip the zip file into /go-agent, after stripping the first path prefix
+  unzip /tmp/go-agent.zip -d / && \
+  mv go-agent-18.11.0 /go-agent && \
+  rm /tmp/go-agent.zip && \
+  mkdir -p /docker-entrypoint.d
+
+# Install Docker
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends xz-utils apt-transport-https \
+  && echo "deb [arch=amd64] https://download.docker.com/linux/debian jessie stable" >> /etc/apt/sources.list \
+  && curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends docker-ce=17.09.1~ce-0~debian \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install Gradle
+RUN \
+  set -o errexit -o nounset \
+  && echo "Downloading Gradle" \
+  && wget --no-verbose --output-document=gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
+  \
+  && echo "Checking download hash" \
+  && echo "${GRADLE_DOWNLOAD_SHA256} *gradle.zip" | sha256sum --check - \
+  \
+  && echo "Installing Gradle" \
+  && unzip gradle.zip \
+  && rm gradle.zip \
+  && mv "gradle-${GRADLE_VERSION}" "${GRADLE_HOME}/" \
+  && ln --symbolic "${GRADLE_HOME}/bin/gradle" /usr/bin/gradle \
+  && mkdir /home/go/.gradle \
+  && chown --recursive go:go /home/go
+
+USER root
+WORKDIR /home/go
+
+# ensure that logs are printed to console output
+COPY agent-bootstrapper-logback-include.xml agent-launcher-logback-include.xml agent-logback-include.xml /go-agent/config/
+
+ADD docker-entrypoint.sh /
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
